@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jx.chinunicom.dutymanage.mapper.UserMapper">
+
+    <resultMap id="UserAndEmployeeResult" type="cn.jx.chinunicom.dutymanage.entity.User">
+        <id property="userId" column="user_id" />
+        <result property="empId" column="empId" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="userType" column="user_type" />
+
+        <!-- association ：配置一对一属性 -->
+        <!-- property:order里面的User属性名 -->
+        <!-- javaType:属性类型 -->
+        <association property="employee" javaType="cn.jx.chinunicom.dutymanage.entity.Employee">
+            <!-- id:声明主键，表示user_id是关联查询对象的唯一标识-->
+            <result property="name" column="name" />
+        </association>
+    </resultMap>
+
+    <select id="selectUser" resultMap="UserAndEmployeeResult">
+        select u.user_id,u.empId,e.name,u.username,u.password,u.user_type from jxlt_user u left join jxlt_employee e on u.empId=e.id
+    </select>
+
+</mapper>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="此代码内容为超萌的猫头鹰登录界面" />
+    <title>综合业务支撑中心</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="login/css/jq22.css">
+    <link rel="stylesheet" href="indexBg/css/index_style.css">
+    <style>
+        .img-box img{padding: 2px 2px;margin-left: 15px;}
+    </style>
+</head>
+<body>
+
+<ul class="layui-nav">
+    <li class="layui-nav-item"><a href="">叶枝排班</a></li>
+    <li class="layui-nav-item" style="float: right"><a href="javascript:;">产品</a></li>
+    <li class="layui-nav-item" style="float: right"><a href="">大数据</a></li>
+    <li class="layui-nav-item" style="float: right"><a href="javascript:;">解决方案</a></li>
+</ul>
+<!-- begin -->
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-md6" style="padding: 5px">
+            <fieldset class="layui-elem-field">
+                <legend>排班系统使用说明</legend>
+                <div class="layui-field-box">
+                    <ul class="layui-timeline">
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                            <div class="layui-timeline-content layui-text">
+                                <h3 class="layui-timeline-title">节假日排班</h3>
+                                <p>
+                                    1.进行排班时，将最先对当月节假日进行排班。
+                                    <br>2.在上一个大型节假日（春节，国庆）中已值班人员将会位于<em>最低优先级</em>，本次节假日机会不可能被排班
+                                    <br>3.节假日值班时，需要早晚各一人<i class="layui-icon"></i>
+                                </p>
+                            </div>
+                        </li>
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                            <div class="layui-timeline-content layui-text">
+                                <h3 class="layui-timeline-title">周四晚班</h3>
+                                <ul>
+                                    <li>1.周四晚班是排班的第二优先级，节假日排班结束后，进行周四晚班人员的排班</li>
+                                    <li>2.周四晚班的可值班人员较少，遇到特殊月份可能会存在一个月多次值班的情况</li>
+                                    <li>3.周四晚班涉及到系统更新，请认真值班</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                            <div class="layui-timeline-content layui-text">
+                                <h3 class="layui-timeline-title">周末白班</h3>
+                                <p>
+                                    1.周末白班为排班的第三优先级
+                                    <br>2.除调休、调班日外，周末白天均应安排人员值班
+                                    <br>3.双休的晚班视为普通晚班，不做额外调整
+                                </p>
+                            </div>
+                        </li>
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                            <div class="layui-timeline-content layui-text">
+                                <div class="layui-timeline-title">普通值班</div>
+                                <ul>
+                                    <li>待其他日子排班结束后，进行普通晚班的排班</li>
+                                    <li>普通晚班为不包括节假日、周四晚班的其他晚班</li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </fieldset>
+        </div>
+        <div class="layui-col-md6">
+<div id="login">
+    <div class="wrapper">
+        <div class="login">
+            <form action="#" method="post" class="container offset1 loginform">
+                <div id="owl-login">
+                    <div class="hand"></div>
+                    <div class="hand hand-r"></div>
+                    <div class="arms">
+                        <div class="arm"></div>
+                        <div class="arm arm-r"></div>
+                    </div>
+                </div>
+                <div class="pad">
+                    <input type="hidden" name="_csrf" value="9IAtUxV2CatyxHiK2LxzOsT6wtBE6h8BpzOmk=">
+                    <div class="control-group">
+                        <div class="controls">
+                            <label for="email" class="control-label fa fa-envelope"></label>
+                            <input id="email" type="email" name="email" placeholder="Email" tabindex="1" autofocus="autofocus" class="form-control input-medium">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <label for="password" class="control-label fa fa-asterisk"></label>
+                            <input id="password" type="password" name="password" placeholder="Password" tabindex="2" class="form-control input-medium">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions"><a href="#" tabindex="5" class="btn pull-left btn-link text-muted">Forgot password?</a><a href="#" tabindex="6" class="btn btn-link text-muted">Sign Up</a>
+                    <button type="submit" tabindex="4" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="me/js/jquery-3.1.1.js"></script>
+    <script>
+        $(function() {
+
+            $('#login #password').focus(function() {
+                $('#owl-login').addClass('password');
+            }).blur(function() {
+                $('#owl-login').removeClass('password');
+            });
+        });
+    </script>
+</div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+<script type="text/javascript" src="layui/layui.all.js"></script>
+<script>
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+</script>
+
+
+</body>
+</html>

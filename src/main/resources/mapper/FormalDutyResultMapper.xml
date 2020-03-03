@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jx.chinunicom.dutymanage.mapper.FormalDutyMapper">
+    <select id="getFormalDutyResultByPage" resultType="cn.jx.chinunicom.dutymanage.entity.FormalDutyResult">
+         select jtdr.id,jtdr.empId,jtdr.dutyDate,jtdr.empName,jtdr.dutyTypeId,jdr.typeName from jxlt_formal_duty_result jtdr left join jxlt_duty_rule jdr on jtdr.dutyTypeId=jdr.id ORDER BY dutyDate
+    </select>
+
+
+</mapper>

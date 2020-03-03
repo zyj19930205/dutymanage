@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jx.chinunicom.dutymanage.mapper.TempDutyResultMapper">
+    <select id="getTempDutyResultByPage" resultType="cn.jx.chinunicom.dutymanage.entity.TempDutyResult">
+         select jtdr.id,jtdr.empId,jtdr.dutyDate,jtdr.empName,jtdr.dutyTypeId,jdr.typeName from jxlt_temp_duty_result jtdr left join jxlt_duty_rule jdr on jtdr.dutyTypeId=jdr.id ORDER BY dutyDate
+    </select>
+
+    <update id="updateDutyDateByEmpId">
+        update jxlt_temp_duty_result set dutyDate=#{dutyDate} where id=#{id}
+    </update>
+
+    <update id="updateDutyById">
+        update jxlt_temp_duty_result set empId=#{empId2},empName=#{empName2} where id=#{id}
+    </update>
+
+    <select id="selectByDutyDateAndEmpName" resultType="cn.jx.chinunicom.dutymanage.entity.TempDutyResult">
+        select*from jxlt_temp_duty_result where empName=#{empName} and dutyDate=#{dutyDate}
+    </select>
+
+    <select id="selectTempDutyResultByDutyDate" resultType="cn.jx.chinunicom.dutymanage.entity.TempDutyResult">
+        select*from jxlt_temp_duty_result where dutyDate=#{dutyDate}
+    </select>
+
+
+    <delete id="deleteFromTempDutyResult">
+        delete from jxlt_temp_duty_result
+    </delete>
+
+    <insert id="insertTempDutyResult" parameterType="java.util.List">
+        insert into jxlt_temp_duty_result (empId,dutyDate,empName,dutyTypeId) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.empId},
+            #{item.dutyDate},
+            #{item.empName},
+            #{item.dutyTypeId}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertToFormalDutyResult">
+        insert into jxlt_formal_duty_result(empId,dutyDate,empName,dutyTypeId) select empId,dutyDate,empName,dutyTypeId from jxlt_temp_duty_result
+    </insert>
+</mapper>

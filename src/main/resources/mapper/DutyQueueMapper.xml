@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jx.chinunicom.dutymanage.mapper.DutyQueueMapper">
+
+    <resultMap id="QueueToEmployee" type="cn.jx.chinunicom.dutymanage.entity.Employee">
+        <result property="id" column="empId" />
+        <result property="name" column="empName" />
+    </resultMap>
+
+    <update id="updateRowId">
+        update jxlt_temp_emp_queue set rowId=#{rowId} where empId=#{empId}
+    </update>
+
+    <update id="updateEmpNameAndEmpId">
+        update jxlt_temp_emp_queue set empId=#{empId2},empName=#{empName2} where rowId=#{rowId}
+    </update>
+
+    <select id="selectRowIdByEmpId" resultType="int">
+        select rowId from jxlt_temp_emp_queue where empId=#{empId}
+    </select>
+
+    <select id="selectQueueToEmployeeByArray" resultMap="QueueToEmployee">
+    SELECT jteq.empId,jteq.empName from jxlt_temp_emp_queue jteq left join jxlt_emp_dutyrule jed on jteq.empId=jed.empId where dutyTypeId in
+    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+        #{item}
+    </foreach>
+    GROUP BY jteq.empId ORDER BY jteq.rowId
+</select>
+
+    <select id="selectQueueToEmployee" resultMap="QueueToEmployee">
+        SELECT jteq.empId,jteq.empName from jxlt_temp_emp_queue jteq left join jxlt_emp_dutyrule jed on jteq.empId=jed.empId where dutyTypeId = #{dutyTypeId}
+        GROUP BY jteq.empId ORDER BY jteq.rowId
+    </select>
+
+    <delete id="deleteByEmpId">
+        delete from jxlt_temp_emp_queue where empId=#{empId}
+    </delete>
+
+    <delete id="clearFormalQueue">
+        delete from jxlt_formal_emp_queue
+    </delete>
+
+    <insert id="insertToFormalQueue">
+         insert into jxlt_formal_emp_queue(rowId,empId,empName) select rowId,empId,empName from jxlt_temp_emp_queue
+    </insert>
+
+</mapper>

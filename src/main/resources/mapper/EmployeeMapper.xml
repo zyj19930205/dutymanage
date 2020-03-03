@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jx.chinunicom.dutymanage.mapper.EmployeeMapper">
+
+
+
+    <select id="selectEmpByGender" resultType="cn.jx.chinunicom.dutymanage.entity.Employee">
+        select*from jxlt_employee where gender=#{gender}
+    </select>
+
+    <select id="selectEmpByPage" resultType="cn.jx.chinunicom.dutymanage.entity.Employee">
+      select emp.*,a.empDutyTypeIds from jxlt_employee emp left join (select id,empId,GROUP_CONCAT(jxlt_emp_dutyrule.dutyTypeId)  as empDutyTypeIds from jxlt_emp_dutyrule GROUP BY empId)
+      as a on a.empId=emp.id
+    </select>
+
+    <select id="selectEmpDutyRuleByEmpId" resultType="String">
+        select*from jxlt_emp_dutyrule where empId=#{id}
+    </select>
+
+    <delete id="deleteEmpDutyRuleByEmpId">
+        delete from jxlt_emp_dutyrule where empId=#{id}
+    </delete>
+
+    <update id="updateEmpDutyRule">
+        insert into jxlt_emp_dutyrule (empId,dutyTypeId) values
+        <foreach collection="dutyTypeIdArray" item="dutyType" index="index" separator=",">
+            (#{empId},#{dutyType})
+        </foreach>
+    </update>
+
+    <select id="selectEmpByDutyRule" resultType="cn.jx.chinunicom.dutymanage.entity.Employee">
+        select distinct(empId),name from jxlt_emp_dutyrule jed left join jxlt_employee je on jed.empId=je.id where dutyTypeId in
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectFromFormalDutyByDutyTypeId" resultType="cn.jx.chinunicom.dutymanage.entity.Employee">
+        select empId,empName from jxlt_formal_duty_result where dutyTypeId in
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jx.chinunicom.dutymanage.mapper.SpecialDutyMapper">
+    <select id="selectSpecialRuleEmp" resultType="cn.jx.chinunicom.dutymanage.entity.SpecialDuty">
+        select DISTINCT(empId),GROUP_CONCAT(special_duty_day) as special_duty_days from jxlt_special_duty
+    </select>
+</mapper>

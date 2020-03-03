@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自动排班</title>
+    <link rel="stylesheet" type="text/css" href="layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="me/css/font.css">
+    <link rel="stylesheet" type="text/css" href="me/css/xadmin.css">
+    <link rel="stylesheet" type="text/css" href="me/css/me.css">
+
+</head>
+<body>
+<ul class="layui-nav topnav">
+    <li class="layui-nav-item">
+        <a href="">控制台<span class="layui-badge">9</span></a>
+    </li>
+    <li class="layui-nav-item">
+        <a href="">个人中心<span class="layui-badge-dot"></span></a>
+    </li>
+    <li class="layui-nav-item" lay-unselect="">
+        <a href="javascript:;"><img src="//t.cn/RCzsdCq" class="layui-nav-img">我</a>
+        <dl class="layui-nav-child">
+            <dd><a href="javascript:;">修改信息</a></dd>
+            <dd><a href="javascript:;">安全管理</a></dd>
+            <dd><a href="javascript:;">退了</a></dd>
+        </dl>
+    </li>
+</ul>
+
+
+
+<div class="left-nav">
+    <div id="side-nav">
+        <ul id="nav">
+            <li >
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6eb;</i>
+                    <cite>主页</cite>
+                    <i class="iconfont nav_right">&#xe6a7;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li><a _href="html/welcome.html"><i class="iconfont">&#xe6a7;</i><cite>控制台</cite></a></li >
+                </ul>
+            </li>
+            <li >
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6e4;</i>
+                    <cite>排班管理</cite>
+                    <i class="iconfont nav_right">&#xe6a7;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li><a _href="html/unicode.html"><i class="iconfont">&#xe6a7;</i><cite>自动排班</cite></a></li>
+                    <li><a _href="html/form1.html"><i class="iconfont">&#xe6a7;</i><cite>排班调整</cite></a></li>
+                    <li> <a _href="html/form2.html"><i class="iconfont">&#xe6a7;</i><cite>排班历史查询</cite></a></li>
+                    <!--                    <li><a _href="html/buttons.html"><i class="iconfont">&#xe6a7;</i><cite>按钮</cite></a></li>-->
+                    <!--                    <li><a _href="html/nav.html"><i class="iconfont">&#xe6a7;</i><cite>导航/面包屑</cite></a></li>-->
+                    <!--                    <li><a _href="html/tab.html"><i class="iconfont">&#xe6a7;</i><cite>选项卡</cite></a></li>-->
+                    <!--                    <li><a _href="html/progress-bar.html"><i class="iconfont">&#xe6a7;</i><cite>进度条</cite></a></li>-->
+                    <!--                    <li><a _href="html/panel.html"><i class="iconfont">&#xe6a7;</i><cite>面板</cite></a></li>-->
+                    <!--                    <li><a _href="html/badge.html"><i class="iconfont">&#xe6a7;</i><cite>微章</cite></a></li>-->
+                    <!--                    <li><a _href="html/timeline.html"><i class="iconfont">&#xe6a7;</i><cite>时间线</cite></a></li>-->
+                    <!--                    <li><a _href="html/table-element.html"><i class="iconfont">&#xe6a7;</i><cite>静态表格</cite></a></li>-->
+                    <!--                    <li><a _href="html/anim.html"><i class="iconfont">&#xe6a7;</i><cite>动画</cite></a></li>-->
+                </ul>
+            </li>
+
+
+            <li>
+                <a href="javascript:;"><i class="iconfont">&#xe6f6;</i><cite>人员管理</cite><i class="iconfont nav_right">&#xe6a7;</i></a>
+                <ul class="sub-menu">
+                    <li><a _href="html/upload.html"><i class="iconfont">&#xe6a7;</i><cite>员工信息管理</cite></a></li>
+                    <li><a _href="html/page.html"><i class="iconfont">&#xe6a7;</i><cite>特殊员工标记</cite></a></li>
+                    <!--                    <li><a _href="html/cate.html"><i class="iconfont">&#xe6a7;</i><cite>多级分类</cite></a></li>-->
+                    <!--                    <li><a _href="html/carousel.html"><i class="iconfont">&#xe6a7;</i><cite>轮播图</cite></a></li>-->
+                    <!--                    <li><a _href="html/city.html"><i class="iconfont">&#xe6a7;</i><cite>城市三级联动</cite></a></li>-->
+                </ul>
+            </li>
+            <!--            <li >-->
+            <!--                <a href="javascript:;">-->
+            <!--                    <i class="iconfont">&#xe6b4;</i>-->
+            <!--                    <cite>排版布局</cite>-->
+            <!--                    <i class="iconfont nav_right">&#xe6a7;</i>-->
+            <!--                </a>-->
+            <!--                <ul class="sub-menu">-->
+            <!--                    <li><a _href="html/grid.html"><i class="iconfont">&#xe6a7;</i><cite>栅格</cite></a></li>-->
+            <!--                    <li><a _href="html/welcome2.html"><i class="iconfont">&#xe6a7;</i><cite>排版</cite></a></li>-->
+            <!--                </ul>-->
+            <!--            </li>-->
+
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe69e;</i>
+                    <cite>调班请求</cite>
+                    <i class="iconfont nav_right">&#xe6a7;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="html/order-list.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>调班请求管理</cite>
+                        </a>
+                    </li >
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe726;</i>
+                    <cite>管理员管理</cite>
+                    <i class="iconfont nav_right">&#xe6a7;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="html/admin-list.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>管理员列表</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="html/admin-role.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>角色管理</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="html/admin-cate.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>权限分类</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="html/admin-rule.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>权限管理</cite>
+                        </a>
+                    </li >
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>用户管理</cite>
+                    <i class="iconfont nav_right">&#xe6a7;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="html/member-list.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>会员列表</cite>
+
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="html/member-del.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>会员删除</cite>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe70b;</i>
+                            <cite>会员管理</cite>
+                            <i class="iconfont nav_right">&#xe6a7;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a _href="html/member-del.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>会员列表</cite>
+
+                                </a>
+                            </li >
+                            <li>
+                                <a _href="html/member-del.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>会员删除</cite>
+
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6ae;</i>
+                    <cite>系统统计</cite>
+                    <i class="iconfont nav_right">&#xe6a7;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="html/echarts1.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>拆线图</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="html/echarts2.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>柱状图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="html/echarts3.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>地图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="html/echarts4.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>饼图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="html/echarts5.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>雷达图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="html/echarts6.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>k线图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="html/echarts7.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>热力图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="html/echarts8.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>仪表图</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>            </ul>
+    </div>
+</div>
+
+<div class="page-content">
+    <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+        <div class="layui-tab-content" style="background: #f0f0f0">
+            <div class="layui-tab-item layui-show" >
+                <div class="layui-fluid">
+                    <div class="autoduty-content">
+                    <div class="layui-card">
+                        <div class="layui-card-header">自动排班</div>
+                        <div class="layui-card-body" style="height: 50px;">
+
+                            <div class="layui-form">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">日期范围</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" class="layui-input" id="test6" placeholder=" - ">
+                                        </div>
+                                        <input type="button" class="layui-btn layui-btn-primary" value="开始自动排班" id="beginAutoDuty" onclick="beginAutoDuty()">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!--显示节假日排班人员-->
+<!--                            <table id="HolidayList" lay-filter="holidayTable"></table>-->
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-content-bg"></div>
+
+
+
+<script type="text/javascript" src="me/js/jquery-3.1.1.js"></script>
+<!--<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>-->
+<script type="text/javascript" src="layui/layui.all.js"></script>
+<script type="text/javascript" src="me/js/xadmin.js"></script>
+<!--<script type="text/javascript" src="me/js/holiday.js"></script>-->
+<script>
+    function beginAutoDuty() {
+        var dutyDate=$('#test6').val();
+        layer.confirm("确定排班？", {
+            btn: ['确定', '取消']
+        },function () {
+            layer.msg("排班成功");
+        },function () {
+            layer.msg("下次注意点");
+        });
+    }
+</script>
+<script>
+
+    layui.use('laydate', function() {
+        var laydate = layui.laydate;
+        //日期范围
+        laydate.render({
+            elem: '#test6'
+            ,range: true
+        });
+    });
+
+
+
+</script>
+
+</body>
+</html>
