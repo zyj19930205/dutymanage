@@ -36,4 +36,13 @@ public class PageController {
     }
 
 
+    @RequestMapping("/testManage")
+    public String testManage(){
+        return "manage/testManage";
+    }
+
+    @RequestMapping("/testNav")
+    public String testNav(){
+        return "common/leftNav";
+    }
 }
