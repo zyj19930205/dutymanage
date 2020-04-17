@@ -15,8 +15,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -165,38 +163,39 @@ public class TempDutyResultImpl implements TempDutyResultService {
         /*
         3.普通排班-周四晚班
          */
+        List<Employee> temp_as=new ArrayList<>();
         List<Employee> thursday_duty_emp=dutyQueueMapper.selectQueueToEmployee(DutyRules.周四晚班.getStatusCode());
+
+        //thursday_duty_emp=removeDutyedEmp(thursday_duty_emp,dutyedEmplist);
         thursday_duty_emp.removeAll(dutyedEmplist);//移除掉假日已经排过班的人
-        System.out.println("第一步，当前队列为"+thursday_duty_emp);
         List<Date> thursday_duty_date=getWeekList(need_duty_date,DutyDays.THURSDAY.getDay());
         List<DateWithEmp> thursday_duty_list=DateAndEmpAdapter(thursday_duty_date,thursday_duty_emp);
-        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,dutyedEmplist);//获取已经被排班的人员
+        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,temp_as);//获取已经被排班的人员
+        //System.out.println("此时已被排班的人（周四晚班）为"+temp_as);
         setDutyRemark(thursday_duty_list,DutyRules.周四晚班.getStatusCode());
         putToQueueFoot(thursday_duty_list);  //将已排班的人移动到队列末尾
 
         /*
         4 普通排班-周末白班
          */
-        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,dutyedEmplist);//获取已经被排班的人员
+//        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,dutyedEmplist);//获取已经被排班的人员
         int weekend_mo_duty[]={DutyRules.周六白班.getStatusCode(),DutyRules.周日白班.getStatusCode()};
-        List<Employee> weekend_morning_duty_emp=dutyQueueMapper.selectQueueToEmployeeByArray(weekend_mo_duty);
-        weekend_morning_duty_emp.removeAll(dutyedEmplist);
-        System.out.println("周末白班可以排班的人员为"+weekend_morning_duty_emp);
+        List<Employee> weekend_morning_duty_emp=dutyQueueMapper.selectQueueToEmployeeByArray(weekend_mo_duty);//周末白班排班人员队列
+        //weekend_morning_duty_emp.removeAll(dutyedEmplist);
         List<Date> weekend_duty_Date=getWeekList(need_duty_date,DutyDays.WEEKEND_DUTY_DAY);
         weekend_duty_Date.removeAll(holiday_tx_date);
-        List<DateWithEmp> weekend_morning_dutyed_list=DateAndEmpAdapter(weekend_duty_Date,weekend_morning_duty_emp);
+        List<DateWithEmp> weekend_morning_dutyed_list=DateAndEmpAdapter(weekend_duty_Date,weekend_morning_duty_emp);//日期与人员匹配
         dutyedEmplist=extractDutyedEmpList(thursday_duty_list,dutyedEmplist);//获取已经被排班的人员
         setDutyRemark(weekend_morning_dutyed_list,DutyRules.周末白班.getStatusCode());
         putToQueueFoot(weekend_morning_dutyed_list);
         /*
         5 普通晚班
          */
-        dutyedEmplist=extractDutyedEmpList(weekend_morning_dutyed_list,dutyedEmplist);//获取已经被排班的人员
+//        dutyedEmplist=extractDutyedEmpList(weekend_morning_dutyed_list,dutyedEmplist);//获取已经被排班的人员
         List<Date> common_day_date=getWeekList(need_duty_date,DutyDays.COMMON_DUTY_DAY);
         List<Employee> common_duty_emp=dutyQueueMapper.selectQueueToEmployee(DutyRules.普通晚班.getStatusCode());
-        common_duty_emp.removeAll(dutyedEmplist);
+        //common_duty_emp.removeAll(dutyedEmplist);
         List<DateWithEmp> common_duty_list=DateAndEmpAdapter(common_day_date,common_duty_emp);
-        System.out.println("普通晚班人员为"+common_duty_list);
         setDutyRemark(common_duty_list,DutyRules.普通晚班.getStatusCode());
         putToQueueFoot(common_duty_list);
         putToQueueFoot(holiday_dateWithEmpList);
@@ -208,13 +207,23 @@ public class TempDutyResultImpl implements TempDutyResultService {
         dateWithEmpList.addAll(weekend_morning_dutyed_list);
         dateWithEmpList.addAll(common_duty_list);
 
-        System.out.println(dateWithEmpList);
+       // System.out.println(dateWithEmpList);
         //生成临时排班表
         //generateTempDutyResultList(dateWithEmpList);
         return dateWithEmpList;
 
     }
 
+    /**
+     * 移除掉已排班的人
+     * @param thursday_duty_emp  要移除员工的集合
+     * @param dutyedEmplist  需要移除的员工
+     * @return
+     */
+    private List<Employee> removeDutyedEmp(List<Employee> thursday_duty_emp, List<Employee> dutyedEmplist) {
+        List<Employee> employees=new ArrayList<>();
+        return thursday_duty_emp;
+    }
 
 
     private DateWithEmp DateAndEmpAdapterForSpecialDuty(Date beginDate, Employee employee) {
@@ -259,20 +268,23 @@ public class TempDutyResultImpl implements TempDutyResultService {
         假期白班
          */
         List<Employee> holidays_morning_duty_emp=dutyQueueMapper.selectQueueToEmployee(DutyRules.假日白班.getStatusCode());//查询出假日白班的排班人员
+        System.out.println("假期白班队列"+holidays_morning_duty_emp);
         List<DateWithEmp> holidays_morning_dutyList=DateAndEmpAdapter(dateList,holidays_morning_duty_emp);  //适配员工与日期
         setDutyRemark(holidays_morning_dutyList,DutyRules.假日白班.getStatusCode()); //给值班人员打上标记，标注是<白班>还是<晚班>
         /*
         假期晚班
          */
         List<Employee> holidays_evening_duty_emp=dutyQueueMapper.selectQueueToEmployee(DutyRules.假日晚班.getStatusCode());//查询出假日晚班的排班人员
+
         dutyed_emp_list=extractDutyedEmpList(holidays_morning_dutyList,dutyed_emp_list);//获取已经被排班的人员
-        System.out.println("白班人数为"+dutyed_emp_list.size()+"人为"+dutyed_emp_list);
+     //   System.out.println("白班人数为"+dutyed_emp_list.size()+"人为"+dutyed_emp_list);
         holidays_evening_duty_emp.removeAll(dutyed_emp_list);
         holidays_evening_duty_emp.addAll(dutyed_emp_list);//将已排班的人移动到集合的末尾
+        System.out.println("假期晚班队列"+holidays_morning_duty_emp);
         List<DateWithEmp> holidays_evening_dutyList=DateAndEmpAdapter(dateList,holidays_evening_duty_emp);
         setDutyRemark(holidays_evening_dutyList,DutyRules.假日晚班.getStatusCode());
         dutyed_emp_list=extractDutyedEmpList(holidays_evening_dutyList,dutyed_emp_list);
-        System.out.println("晚班人数为"+dutyed_emp_list.size()+"人为"+dutyed_emp_list);
+      //  System.out.println("晚班人数为"+dutyed_emp_list.size()+"人为"+dutyed_emp_list);
         holidays_duty_list.addAll(holidays_morning_dutyList);
         holidays_duty_list.addAll(holidays_evening_dutyList);
 
