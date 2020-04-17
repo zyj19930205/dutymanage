@@ -32,6 +32,17 @@ public class DutyController {
     HolidayMapper holidayMapper;
 
 
+
+    @RequestMapping("/getDutyResultForTest")
+    public List<DateWithEmp> getDutyResultForTest() throws ParseException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        String begin="2020-06-01";
+        String end="2020-06-30";
+        Date begin_date=sdf.parse(begin);
+        Date end_date=sdf.parse(end);
+        return tempDutyResultService.autoDutyByDay(begin_date,end_date);
+    }
+
     /**
      * 获取临时排班结果
      * @param limit

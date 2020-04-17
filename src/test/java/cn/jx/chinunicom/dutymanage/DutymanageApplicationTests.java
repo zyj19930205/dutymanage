@@ -78,11 +78,16 @@ class DutymanageApplicationTests {
       System.out.println(tempDutyResult);
     }
 
+
+    /**
+     * 用来手动排班的函数
+     * @throws ParseException
+     */
     @Test
     public void autoDuty() throws ParseException {
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        String begin="2020-02-01";
-        String end="2020-02-29";
+        String begin="2020-05-01";
+        String end="2020-05-31";
         Date begin_date=sdf.parse(begin);
         Date end_date=sdf.parse(end);
         List<Date> dates=holidayMapper.getHoliday_in_dutyScope(begin_date,end_date);
