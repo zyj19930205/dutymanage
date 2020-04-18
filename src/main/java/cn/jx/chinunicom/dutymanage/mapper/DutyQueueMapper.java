@@ -17,4 +17,5 @@ public interface DutyQueueMapper extends BaseMapper<DutyQueue> {
     void updateEmpNameAndEmpId(int empId2,String empName2,int rowId);
     void clearFormalQueue();
     void insertToFormalQueue();
+    List<Employee> selectBigHolidayDutyedEmp();
 }

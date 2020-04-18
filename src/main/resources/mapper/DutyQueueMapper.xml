@@ -46,4 +46,11 @@
          insert into jxlt_formal_emp_queue(rowId,empId,empName) select rowId,empId,empName from jxlt_temp_emp_queue
     </insert>
 
+    <!--查找出2020年春节值班过的人，防止这些人在五一假期中被排到，这是一个临时方法，等待改进-->
+    <select id="selectBigHolidayDutyedEmp" resultMap="QueueToEmployee">
+        select aa.empId,aa.empName from(select jfeq.empId,jfeq.empName,jfdr.dutyDate,jfdr.dutyTypeId from jxlt_formal_emp_queue jfeq
+        left join jxlt_formal_duty_result jfdr on jfeq.empId=jfdr.empId) aa left join jxlt_holidays jh
+        on aa.dutyDate=jh.holidayDate
+        where date_format(aa.dutyDate, '%Y') >='2020' and jh.HolidayType=1;
+    </select>
 </mapper>

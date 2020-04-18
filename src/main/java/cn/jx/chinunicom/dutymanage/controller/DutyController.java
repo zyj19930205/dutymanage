@@ -36,8 +36,8 @@ public class DutyController {
     @RequestMapping("/getDutyResultForTest")
     public List<DateWithEmp> getDutyResultForTest() throws ParseException {
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        String begin="2020-06-01";
-        String end="2020-06-30";
+        String begin="2020-05-01";
+        String end="2020-05-31";
         Date begin_date=sdf.parse(begin);
         Date end_date=sdf.parse(end);
         return tempDutyResultService.autoDutyByDay(begin_date,end_date);
