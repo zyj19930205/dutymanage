@@ -49,6 +49,7 @@ public class DutyController {
      * @param page
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping("/getTempDutyResult")
     public ResultMsg<TempDutyResult> getTempDutyResult(@RequestParam(defaultValue ="15")int limit, @RequestParam (defaultValue = "1") int page){
         ResultMsg resultMsg=tempDutyResultService.getTempDutyResultByPage(page,limit);
