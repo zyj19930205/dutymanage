@@ -442,13 +442,14 @@ public class TempDutyResultImpl implements TempDutyResultService {
      * 执行正式排班，将排班数据录入历史库
      * 1.临时排班表转为正式排班表
      * 2.删除正式对列表中的旧队列
-     * 3.插入当前的新队列
+     * 3.插入当前的新队列（新队列的序号从1开始）
      * @return
      */
     @Override
     public ResultMsg executeFormalDutyResult() {
         tempDutyResultMapper.insertToFormalDutyResult();
         dutyQueueMapper.clearFormalQueue();
+        dutyQueueMapper.truncateTable();//清理主键序列
         dutyQueueMapper.insertToFormalQueue();
         return ResultMsg.createBySuccess();
     }
