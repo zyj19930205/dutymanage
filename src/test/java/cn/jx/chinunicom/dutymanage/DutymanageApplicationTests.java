@@ -104,4 +104,9 @@ class DutymanageApplicationTests {
         List<SimpleDateWithEmp> simpleDateWithEmps=tempDutyResultService.getDutyResultBySimpleFormat();
         System.out.println(simpleDateWithEmps);
     }
+
+    @Test
+    public void executeFormalDuty(){
+        tempDutyResultService.executeFormalDutyResult();
+    }
 }

@@ -6,10 +6,7 @@ import cn.jx.chinunicom.dutymanage.mapper.EmployeeMapper;
 import cn.jx.chinunicom.dutymanage.service.EmployeeService;
 import cn.jx.chinunicom.dutymanage.util.DutyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -24,9 +21,10 @@ public class EmployeeController {
     /*
     查询所有员工数据
      */
-    @CrossOrigin(origins = {"http://localhost:8080", "null"})
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping("/getEmployee")
     public ResultMsg getEmployeeList(){
+        System.out.println("有人试图访问这个接口");
        List<Employee> employeeList=employeeService.findAllEmployee();
        return employeeList.size()>0?ResultMsg.createBySuccess(employeeList.size(),employeeList):ResultMsg.createByNull(employeeList.size(),"无数据");
     }
@@ -34,7 +32,7 @@ public class EmployeeController {
     /*
     分页查询员工数据
      */
-    @CrossOrigin(origins = {"http://localhost:8080", "null"})
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping("/getEmployeeByPage")
     public ResultMsg<Employee> getEmployeeByPage(@RequestParam(defaultValue ="15")int limit, @RequestParam (defaultValue = "1") int page){
         ResultMsg resultMsg=employeeService.getEmpByPage(page,limit);
@@ -55,6 +53,26 @@ public class EmployeeController {
         }
         employeeMapper.updateEmpDutyRule(dutyType_list,empId);
         return "更新成功！";
+    }
+
+
+    @CrossOrigin(origins = "http://localhost:8080")
+    @RequestMapping(value = "addEmp",method = RequestMethod.POST)
+    public String addEmp(Employee employee){
+        System.out.println(employee);
+        try{
+            employeeMapper.insert(employee);
+            return "添加员工"+employee.getName()+"成功！";
+        }catch (Exception e){
+            return "添加失败！";
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:8080")
+    @RequestMapping(value = "delEmp/{id}",method = RequestMethod.DELETE)
+    public String delEmp(@PathVariable int id){
+        employeeMapper.deleteById(id);
+        return "删除成功！";
     }
 
 

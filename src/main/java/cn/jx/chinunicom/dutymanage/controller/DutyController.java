@@ -8,6 +8,7 @@ import cn.jx.chinunicom.dutymanage.service.FormalDutyResultService;
 import cn.jx.chinunicom.dutymanage.service.TempDutyResultService;
 import cn.jx.chinunicom.dutymanage.util.DutyUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.ParameterResolutionDelegate;
@@ -49,6 +50,7 @@ public class DutyController {
      * @param page
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping("/getTempDutyResult")
     public ResultMsg<TempDutyResult> getTempDutyResult(@RequestParam(defaultValue ="15")int limit, @RequestParam (defaultValue = "1") int page){
         ResultMsg resultMsg=tempDutyResultService.getTempDutyResultByPage(page,limit);
@@ -58,6 +60,7 @@ public class DutyController {
     /**
      * 分页查询排班历史结果
      */
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/getFormalDutyByPage")
     public ResultMsg<FormalDutyResult> getFormalDutyByPage(@RequestParam(defaultValue ="15")int limit, @RequestParam (defaultValue = "1") int page){
         ResultMsg resultMsg=formalDutyResultService.getFormalDutyResultByPage(page,limit);
@@ -103,7 +106,8 @@ public class DutyController {
     /*
     根据人名查询其对应的值班日期，值班日期可能有多个
      */
-    @RequestMapping("/getDutyDateByEmpName/{empName}")
+    @CrossOrigin(origins = "http://localhost:8080")
+    @RequestMapping(value = "/getDutyDateByEmpName/{empName}",method = RequestMethod.GET)
     public List<Date> getDutyDateByEmpName(@PathVariable String empName){
         return tempDutyResultService.findDateByEmpName(empName);
     }
@@ -123,12 +127,14 @@ public class DutyController {
     /*
     将两个人员之间的排班日期进行调换
      */
-    @RequestMapping("/replaceEmpDutyResult")
+    @CrossOrigin(origins = "http://localhost:8080")
+    @RequestMapping(value = "/replaceEmpDutyResult",method = RequestMethod.POST)
     public ResultMsg replaceEmpDutyResult(HttpServletRequest request) throws ParseException {
         String empName_1=request.getParameter("empName1");
         String empName_2=request.getParameter("empName2");
         String date_1=request.getParameter("dutyDate1");
         String date_2=request.getParameter("dutyDate2");
+        System.out.println(empName_1+empName_2+date_1+date_2);
         Date new_date_1=DutyUtils.StringToDate(date_1);
         Date new_date_2=DutyUtils.StringToDate(date_2);
         return tempDutyResultService.changeDutyWithTwoEmp(empName_1,empName_2,new_date_1,new_date_2);
@@ -154,11 +160,11 @@ public class DutyController {
      * @param endDate
      * @return
      */
-    @RequestMapping("/autoSetDuty/{beginDate}/{endDate}")
-    public ResultMsg autoSetDuty(@PathVariable Date beginDate,@PathVariable Date endDate){
-        System.out.println(beginDate);
-        System.out.println(endDate);
-        return ResultMsg.createByFail();
+    @CrossOrigin(origins = "http://localhost:8080")
+    @RequestMapping(value = "/autoDuty/{beginDate}/{endDate}",method = RequestMethod.POST)
+    public ResultMsg autoSetDuty(@PathVariable Date beginDate,@PathVariable Date endDate) throws ParseException {
+        tempDutyResultService.autoDutyByDay(beginDate,endDate);
+        return ResultMsg.createBySuccess();
     }
 
     /**

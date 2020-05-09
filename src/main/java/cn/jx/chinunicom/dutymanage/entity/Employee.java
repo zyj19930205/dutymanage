@@ -1,12 +1,16 @@
 package cn.jx.chinunicom.dutymanage.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
 @TableName("jxlt_employee")
 public class Employee {
+
+    @TableId(type = IdType.AUTO)
     private Integer id;
     private String name;
     private String gender;
@@ -16,6 +20,8 @@ public class Employee {
     private int specialRule;
     @TableField(exist=false)
     private String empDutyTypeIds;
+
+
 
     @Override
     public boolean equals(Object obj) {

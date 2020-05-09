@@ -3,6 +3,8 @@ package cn.jx.chinunicom.dutymanage.mapper;
 import cn.jx.chinunicom.dutymanage.entity.DutyQueue;
 import cn.jx.chinunicom.dutymanage.entity.Employee;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,4 +20,7 @@ public interface DutyQueueMapper extends BaseMapper<DutyQueue> {
     void clearFormalQueue();
     void insertToFormalQueue();
     List<Employee> selectBigHolidayDutyedEmp();
+    void truncateTable();
+
+    IPage<DutyQueue> selectQueueByPage(Page<DutyQueue> dutyQueuePage);
 }
