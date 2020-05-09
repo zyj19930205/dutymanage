@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
+@CrossOrigin
 @RestController
 public class DutyQueueController {
 
@@ -29,7 +30,6 @@ public class DutyQueueController {
         return ResultMsg.createBySuccess(dutyQueues.size(),dutyQueues);
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/getDutyQueueByPage")
     public ResultMsg getDutyQueueByPage(@RequestParam(defaultValue ="15")int limit, @RequestParam (defaultValue = "1") int page){
 //        List<DutyQueue> dutyQueues=dutyQueueMapper.selectList(null);

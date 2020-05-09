@@ -1,5 +1,6 @@
 package cn.jx.chinunicom.dutymanage.mapper;
 
+import cn.jx.chinunicom.dutymanage.entity.Bo.EmployeeDutyInfo;
 import cn.jx.chinunicom.dutymanage.entity.Employee;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -19,4 +20,6 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
     void updateEmpDutyRule(@Param("dutyTypeIdArray") int[] dutyTypeId, int empId);
     List<Employee> selectEmpByDutyRule(int[] dutyTypeId);
     List<Employee> selectFromFormalDutyByDutyTypeId(int[] dutyTypeIds);
+
+    List<EmployeeDutyInfo> selectByEmpName(String name);
 }

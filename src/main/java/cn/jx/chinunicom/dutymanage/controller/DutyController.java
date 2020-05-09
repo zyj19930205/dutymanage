@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin
 @RestController
 public class DutyController {
 
@@ -50,7 +51,6 @@ public class DutyController {
      * @param page
      * @return
      */
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping("/getTempDutyResult")
     public ResultMsg<TempDutyResult> getTempDutyResult(@RequestParam(defaultValue ="15")int limit, @RequestParam (defaultValue = "1") int page){
         ResultMsg resultMsg=tempDutyResultService.getTempDutyResultByPage(page,limit);
@@ -60,7 +60,6 @@ public class DutyController {
     /**
      * 分页查询排班历史结果
      */
-    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/getFormalDutyByPage")
     public ResultMsg<FormalDutyResult> getFormalDutyByPage(@RequestParam(defaultValue ="15")int limit, @RequestParam (defaultValue = "1") int page){
         ResultMsg resultMsg=formalDutyResultService.getFormalDutyResultByPage(page,limit);
@@ -106,7 +105,6 @@ public class DutyController {
     /*
     根据人名查询其对应的值班日期，值班日期可能有多个
      */
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "/getDutyDateByEmpName/{empName}",method = RequestMethod.GET)
     public List<Date> getDutyDateByEmpName(@PathVariable String empName){
         return tempDutyResultService.findDateByEmpName(empName);
@@ -127,7 +125,6 @@ public class DutyController {
     /*
     将两个人员之间的排班日期进行调换
      */
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "/replaceEmpDutyResult",method = RequestMethod.POST)
     public ResultMsg replaceEmpDutyResult(HttpServletRequest request) throws ParseException {
         String empName_1=request.getParameter("empName1");
@@ -160,7 +157,6 @@ public class DutyController {
      * @param endDate
      * @return
      */
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "/autoDuty/{beginDate}/{endDate}",method = RequestMethod.POST)
     public ResultMsg autoSetDuty(@PathVariable Date beginDate,@PathVariable Date endDate) throws ParseException {
         tempDutyResultService.autoDutyByDay(beginDate,endDate);

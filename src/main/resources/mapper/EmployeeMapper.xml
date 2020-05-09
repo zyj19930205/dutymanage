@@ -4,7 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.jx.chinunicom.dutymanage.mapper.EmployeeMapper">
 
-
+    <resultMap id="EmpDutyInfo" type="cn.jx.chinunicom.dutymanage.entity.Bo.EmployeeDutyInfo">
+        <id property="id" column="empId"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="address" column="address"/>
+        <result property="remarks" column="remarks"/>
+        <result property="dutyDate" column="dutyDate"/>
+        <result property="dutyTypeId" column="dutyTypeId"/>
+        <result property="typeName" column="typeName"/>
+    </resultMap>
 
     <select id="selectEmpByGender" resultType="cn.jx.chinunicom.dutymanage.entity.Employee">
         select*from jxlt_employee where gender=#{gender}
@@ -42,5 +51,10 @@
         <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
             #{item}
         </foreach>
+    </select>
+
+    <select id="selectByEmpName" resultMap="EmpDutyInfo">
+        select jdr.empId,je.name,je.gender,je.address,je.remarks,jdr.dutyDate,jdr.dutyTypeId,rule.typeName from
+        jxlt_employee je,jxlt_formal_duty_result jdr,jxlt_duty_rule rule where je.id=jdr.empId and jdr.dutyTypeId=rule.id and je.name=#{name}
     </select>
 </mapper>

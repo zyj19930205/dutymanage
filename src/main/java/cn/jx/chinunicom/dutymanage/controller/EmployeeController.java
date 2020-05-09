@@ -1,5 +1,6 @@
 package cn.jx.chinunicom.dutymanage.controller;
 
+import cn.jx.chinunicom.dutymanage.entity.Bo.EmployeeDutyInfo;
 import cn.jx.chinunicom.dutymanage.entity.Employee;
 import cn.jx.chinunicom.dutymanage.entity.ResultMsg;
 import cn.jx.chinunicom.dutymanage.mapper.EmployeeMapper;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 public class EmployeeController {
     @Autowired
@@ -21,7 +23,6 @@ public class EmployeeController {
     /*
     查询所有员工数据
      */
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping("/getEmployee")
     public ResultMsg getEmployeeList(){
         System.out.println("有人试图访问这个接口");
@@ -32,7 +33,6 @@ public class EmployeeController {
     /*
     分页查询员工数据
      */
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping("/getEmployeeByPage")
     public ResultMsg<Employee> getEmployeeByPage(@RequestParam(defaultValue ="15")int limit, @RequestParam (defaultValue = "1") int page){
         ResultMsg resultMsg=employeeService.getEmpByPage(page,limit);
@@ -42,9 +42,10 @@ public class EmployeeController {
     /*
     修改员工信息
      */
-    @RequestMapping("/modifyEmployee")
+    @RequestMapping(value = "/modifyEmployee", method = RequestMethod.PUT)
     public String modifyEmp(HttpServletRequest request){
         String dutyType=request.getParameter("dutyType");
+        System.out.println("dutyType is "+dutyType);
         String temp[]=dutyType.split(",");
         int dutyType_list[]= DutyUtils.StringToInt(temp);
         int empId=Integer.parseInt(request.getParameter("id"));
@@ -56,7 +57,6 @@ public class EmployeeController {
     }
 
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "addEmp",method = RequestMethod.POST)
     public String addEmp(Employee employee){
         System.out.println(employee);
@@ -68,12 +68,16 @@ public class EmployeeController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "delEmp/{id}",method = RequestMethod.DELETE)
     public String delEmp(@PathVariable int id){
         employeeMapper.deleteById(id);
         return "删除成功！";
     }
 
+    @RequestMapping(value = "emp/{name}",method = RequestMethod.GET)
+    public ResultMsg getEmpByName(@PathVariable String name){
+        List<EmployeeDutyInfo> employeeDutyInfos=employeeMapper.selectByEmpName(name);
+        return ResultMsg.createBySuccess(employeeDutyInfos.size(),employeeDutyInfos);
+    }
 
 }
