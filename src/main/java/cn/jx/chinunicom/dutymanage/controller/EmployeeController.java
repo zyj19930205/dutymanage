@@ -6,6 +6,7 @@ import cn.jx.chinunicom.dutymanage.mapper.EmployeeMapper;
 import cn.jx.chinunicom.dutymanage.service.EmployeeService;
 import cn.jx.chinunicom.dutymanage.util.DutyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ public class EmployeeController {
     /*
     查询所有员工数据
      */
+    @CrossOrigin(origins = {"http://localhost:8080", "null"})
     @RequestMapping("/getEmployee")
     public ResultMsg getEmployeeList(){
        List<Employee> employeeList=employeeService.findAllEmployee();
@@ -32,6 +34,7 @@ public class EmployeeController {
     /*
     分页查询员工数据
      */
+    @CrossOrigin(origins = {"http://localhost:8080", "null"})
     @RequestMapping("/getEmployeeByPage")
     public ResultMsg<Employee> getEmployeeByPage(@RequestParam(defaultValue ="15")int limit, @RequestParam (defaultValue = "1") int page){
         ResultMsg resultMsg=employeeService.getEmpByPage(page,limit);

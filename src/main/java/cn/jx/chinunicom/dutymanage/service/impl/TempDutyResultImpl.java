@@ -71,6 +71,7 @@ public class TempDutyResultImpl implements TempDutyResultService {
         return tempDutyResultBos;
     }
 
+
     @Override
     public boolean isDutyDateExist(Date dutyDate) {
         return tempDutyResultMapper.selectTempDutyResultByDutyDate(dutyDate)==null?false:true;
@@ -153,19 +154,20 @@ public class TempDutyResultImpl implements TempDutyResultService {
             need_duty_date.removeAll(holiday_date);
         }
         HolidayDutyedEmpList=extractDutyedEmpList(holiday_dateWithEmpList,dutyedEmplist);
+        System.out.println("已排班的人为"+HolidayDutyedEmpList);
         /*
         2.特殊人员排班
          */
-        if(specialDutyMapper.selectSpecialRuleEmp().size()!=0){
-            special_dateWithEmpList=specialDuty(need_duty_date,beginDate,endDate,special_dateWithEmpList);
-            for(DateWithEmp dateWithEmp:special_dateWithEmpList){
-                need_duty_date.remove(dateWithEmp.getDutyDate());
-            }
-        }
+//        if(specialDutyMapper.selectSpecialRuleEmp().size()!=0){
+//            special_dateWithEmpList=specialDuty(need_duty_date,beginDate,endDate,special_dateWithEmpList);
+//            for(DateWithEmp dateWithEmp:special_dateWithEmpList){
+//                need_duty_date.remove(dateWithEmp.getDutyDate());
+//            }
+//        }
         /*
         3.普通排班-周四晚班
          */
-        List<Employee> temp_as=new ArrayList<>();
+        List<Employee> temp_thursday_duty_emp=new ArrayList<>();
         List<Employee> thursday_duty_emp=dutyQueueMapper.selectQueueToEmployee(DutyRules.周四晚班.getStatusCode());
 
         //thursday_duty_emp=removeDutyedEmp(thursday_duty_emp,dutyedEmplist);
@@ -173,7 +175,7 @@ public class TempDutyResultImpl implements TempDutyResultService {
         System.out.println("周四晚班队列为"+thursday_duty_emp);
         List<Date> thursday_duty_date=getWeekList(need_duty_date,DutyDays.THURSDAY.getDay());
         List<DateWithEmp> thursday_duty_list=DateAndEmpAdapter(thursday_duty_date,thursday_duty_emp);
-        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,temp_as);//获取已经被排班的人员
+        temp_thursday_duty_emp=extractDutyedEmpList(thursday_duty_list,temp_thursday_duty_emp);//获取周四已经被排班的人员
         //System.out.println("此时已被排班的人（周四晚班）为"+temp_as);
         setDutyRemark(thursday_duty_list,DutyRules.周四晚班.getStatusCode());
         putToQueueFoot(thursday_duty_list);  //将已排班的人移动到队列末尾
@@ -181,7 +183,7 @@ public class TempDutyResultImpl implements TempDutyResultService {
         /*
         4 普通排班-周末白班
          */
-//        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,dutyedEmplist);//获取已经被排班的人员
+        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,dutyedEmplist);//获取已经被排班的人员
         int weekend_mo_duty[]={DutyRules.周六白班.getStatusCode(),DutyRules.周日白班.getStatusCode()};
         List<Employee> weekend_morning_duty_emp=dutyQueueMapper.selectQueueToEmployeeByArray(weekend_mo_duty);//周末白班排班人员队列
         weekend_morning_duty_emp.removeAll(HolidayDutyedEmpList);
@@ -194,17 +196,19 @@ public class TempDutyResultImpl implements TempDutyResultService {
         /*
         5 普通晚班
          */
-//        dutyedEmplist=extractDutyedEmpList(weekend_morning_dutyed_list,dutyedEmplist);//获取已经被排班的人员
+
         List<Date> common_day_date=getWeekList(need_duty_date,DutyDays.COMMON_DUTY_DAY);
         List<Employee> common_duty_emp=dutyQueueMapper.selectQueueToEmployee(DutyRules.普通晚班.getStatusCode());
         common_duty_emp.removeAll(HolidayDutyedEmpList);
+
         List<DateWithEmp> common_duty_list=DateAndEmpAdapter(common_day_date,common_duty_emp);
         setDutyRemark(common_duty_list,DutyRules.普通晚班.getStatusCode());
+        System.out.println("普通晚班已排班的人员数量为"+common_duty_list.size()+"人员为"+common_duty_list);
         putToQueueFoot(common_duty_list);
         putToQueueFoot(holiday_dateWithEmpList);
 
         //填充总表
-        dateWithEmpList.addAll(special_dateWithEmpList);
+//        dateWithEmpList.addAll(special_dateWithEmpList);
         dateWithEmpList.addAll(holiday_dateWithEmpList);
         dateWithEmpList.addAll(thursday_duty_list);
         dateWithEmpList.addAll(weekend_morning_dutyed_list);
