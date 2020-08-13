@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -23,4 +24,11 @@ public interface DutyQueueMapper extends BaseMapper<DutyQueue> {
     void truncateTable();
 
     IPage<DutyQueue> selectQueueByPage(Page<DutyQueue> dutyQueuePage);
+
+    /**
+     * 查询上个月值过白班的员工名单
+     * @param
+     * @return
+     */
+    List<Employee> selectLastMonthWeekendMorningEmp(String dutyDate);
 }

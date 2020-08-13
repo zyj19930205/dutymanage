@@ -141,18 +141,25 @@ public class TempDutyResultImpl implements TempDutyResultService {
         List<Employee> HolidayDutyedEmpList=new ArrayList<>();//假日已排班员工
         List<Date> holiday_tx_date=holidayMapper.getHolidayByHolidayType(7);//获取调休日
         List<DateWithEmp> holiday_dateWithEmpList=new ArrayList<>();//假日排班表
+        List<DateWithEmp> last_holiday_dutyEmp = new ArrayList<>();//上个节假日排班人员
         List<DateWithEmp> special_dateWithEmpList=new ArrayList<>();//特殊情况排班表
         List<Date> need_duty_date= DutyUtils.getDates(beginDate,endDate);
         List<Date> holiday_date=holidayMapper.getHoliday_in_dutyScope(beginDate,endDate);
-        holiday_date.removeAll(holiday_tx_date);//不要把调休算进假日中哦~
+        //不要把调休算进假日中哦~
+        holiday_date.removeAll(holiday_tx_date);
         /*
         1.假日排班
          */
         if(holiday_date.size()!=0){
-            holiday_dateWithEmpList=auto_holiday_duty(holiday_date,dutyedEmplist);
+            holiday_dateWithEmpList=auto_holiday_duty(holiday_date,dutyedEmplist,beginDate);
             need_duty_date.removeAll(holiday_date);
         }
         HolidayDutyedEmpList=extractDutyedEmpList(holiday_dateWithEmpList,dutyedEmplist);
+
+        //筛选出上个月节假日值班人员，将他们放在末尾
+//        Integer last_year = beginDate.getYear() + 1900;
+//        Integer last_month = beginDate.getMonth() + 1;
+//        List<Employee> last_holidays_dutyed_empList=employeeMapper.selectFromFormalDutyByDutyTypeId(last_year,last_month,new int[]{DutyRules.假日白班.getStatusCode(),DutyRules.假日晚班.getStatusCode()});
         /*
         2.特殊人员排班
          */
@@ -170,11 +177,8 @@ public class TempDutyResultImpl implements TempDutyResultService {
 
         //thursday_duty_emp=removeDutyedEmp(thursday_duty_emp,dutyedEmplist);
         thursday_duty_emp.removeAll(HolidayDutyedEmpList);//移除掉假日已经排过班的人
-        System.out.println("周四晚班队列为"+thursday_duty_emp);
         List<Date> thursday_duty_date=getWeekList(need_duty_date,DutyDays.THURSDAY.getDay());
         List<DateWithEmp> thursday_duty_list=DateAndEmpAdapter(thursday_duty_date,thursday_duty_emp);
-        //temp_as=extractDutyedEmpList(thursday_duty_list,temp_as);//获取已经被排班的人员
-        //System.out.println("此时已被排班的人（周四晚班）为"+temp_as);
         setDutyRemark(thursday_duty_list,DutyRules.周四晚班.getStatusCode());
         putToQueueFoot(thursday_duty_list);  //将已排班的人移动到队列末尾
 
@@ -186,6 +190,13 @@ public class TempDutyResultImpl implements TempDutyResultService {
         List<Employee> weekend_morning_duty_emp=dutyQueueMapper.selectQueueToEmployeeByArray(weekend_mo_duty);//周末白班排班人员队列
         weekend_morning_duty_emp.removeAll(HolidayDutyedEmpList);
         System.out.println("周末白班人员队列为"+weekend_morning_duty_emp);
+        //查询上个月值过白班的人员，并将这些人移动到队列末尾
+        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM");
+        String lastMonthDate = sdf.format(beginDate);
+        List<Employee> lastWeekDutyedEmp = dutyQueueMapper.selectLastMonthWeekendMorningEmp(lastMonthDate);
+        weekend_morning_duty_emp.removeAll(lastWeekDutyedEmp);
+        weekend_morning_duty_emp.addAll(lastWeekDutyedEmp);
+
         List<Date> weekend_duty_Date=getWeekList(need_duty_date,DutyDays.WEEKEND_DUTY_DAY);
         weekend_duty_Date.removeAll(holiday_tx_date);
         List<DateWithEmp> weekend_morning_dutyed_list=DateAndEmpAdapter(weekend_duty_Date,weekend_morning_duty_emp);//日期与人员匹配
@@ -198,6 +209,7 @@ public class TempDutyResultImpl implements TempDutyResultService {
 //        dutyedEmplist=extractDutyedEmpList(weekend_morning_dutyed_list,dutyedEmplist);//获取已经被排班的人员
         List<Date> common_day_date=getWeekList(need_duty_date,DutyDays.COMMON_DUTY_DAY);
         List<Employee> common_duty_emp=dutyQueueMapper.selectQueueToEmployee(DutyRules.普通晚班.getStatusCode());
+        //System.out.println("普通晚班人员队列"+common_duty_emp);
         common_duty_emp.removeAll(HolidayDutyedEmpList);
         List<DateWithEmp> common_duty_list=DateAndEmpAdapter(common_day_date,common_duty_emp);
         setDutyRemark(common_duty_list,DutyRules.普通晚班.getStatusCode());
@@ -265,9 +277,13 @@ public class TempDutyResultImpl implements TempDutyResultService {
      * 节假日排班（主要是春节，国庆）时，需要尽可能的避免今年节假日排过班的人再次被排到，具体规则如下：
      * 1.排过一次权重为5以上的班后，今年内将不会再排到权重为5以上的班（包括次年春节）
      */
-    public List<DateWithEmp> auto_holiday_duty(List<Date> dateList,List<Employee> dutyed_emp_list){
+    public List<DateWithEmp> auto_holiday_duty(List<Date> dateList,List<Employee> dutyed_emp_list,Date beginDate){
         List<DateWithEmp> holidays_duty_list=new ArrayList<>();
-        //List<Employee> last_holidays_dutyed_empList=employeeMapper.selectFromFormalDutyByDutyTypeId(new int[]{DutyRules.假日白班.getStatusCode(),DutyRules.假日晚班.getStatusCode()});//上一个大型节假日已排班人员
+        //获取上一个月份
+        Integer last_year = beginDate.getYear() + 1900;
+        Integer last_month = beginDate.getMonth() + 1;
+        //上一个大型节假日已排班人员
+//        List<Employee> last_holidays_dutyed_empList=employeeMapper.selectFromFormalDutyByDutyTypeId(last_year,last_month,new int[]{DutyRules.假日白班.getStatusCode(),DutyRules.假日晚班.getStatusCode()});
         List<Employee> bigHolidyDutyed_empList=new ArrayList<>();
         bigHolidyDutyed_empList=dutyQueueMapper.selectBigHolidayDutyedEmp();
 

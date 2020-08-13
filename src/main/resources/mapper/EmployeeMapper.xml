@@ -20,7 +20,7 @@
     </select>
 
     <select id="selectEmpByPage" resultType="cn.jx.chinunicom.dutymanage.entity.Employee">
-      select emp.*,a.empDutyTypeIds from jxlt_employee emp left join (select id,empId,GROUP_CONCAT(jxlt_emp_dutyrule.dutyTypeId)  as empDutyTypeIds from jxlt_emp_dutyrule GROUP BY empId)
+      select emp.*,a.empDutyTypeIds from jxlt_employee emp left join (select empId,GROUP_CONCAT(jxlt_emp_dutyrule.dutyTypeId)  as empDutyTypeIds from jxlt_emp_dutyrule GROUP BY empId)
       as a on a.empId=emp.id
     </select>
 
@@ -47,11 +47,12 @@
     </select>
 
     <select id="selectFromFormalDutyByDutyTypeId" resultType="cn.jx.chinunicom.dutymanage.entity.Employee">
-        select empId,empName from jxlt_formal_duty_result where dutyTypeId in
-        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-    </select>
+        select empId as id,empName as name from jxlt_formal_duty_result where Year(dutyDate) = #{last_year} and Month(dutyDate) = #{last_month} and dutyTypeId in (2,11)
+        </select>
+<!--        <foreach item="item" index="index" collection="dutyTypeIds" open="(" separator="," close=")">-->
+<!--            #{item}-->
+<!--        </foreach>-->
+
 
     <select id="selectByEmpName" resultMap="EmpDutyInfo">
         select jdr.empId,je.name,je.gender,je.address,je.remarks,jdr.dutyDate,jdr.dutyTypeId,rule.typeName from

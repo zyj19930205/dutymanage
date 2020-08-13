@@ -20,7 +20,7 @@ public class EmployeeController {
     @Autowired
     EmployeeMapper employeeMapper;
 
-    /*
+    /**
     查询所有员工数据
      */
     @RequestMapping("/getEmployee")

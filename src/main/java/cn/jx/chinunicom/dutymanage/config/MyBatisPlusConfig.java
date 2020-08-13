@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
+/**
+ * @author 37980
+ */
 @Configuration
 public class MyBatisPlusConfig {
     @Bean

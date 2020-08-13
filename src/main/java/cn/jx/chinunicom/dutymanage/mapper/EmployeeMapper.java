@@ -19,7 +19,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
     void deleteEmpDutyRuleByEmpId(int empId);
     void updateEmpDutyRule(@Param("dutyTypeIdArray") int[] dutyTypeId, int empId);
     List<Employee> selectEmpByDutyRule(int[] dutyTypeId);
-    List<Employee> selectFromFormalDutyByDutyTypeId(int[] dutyTypeIds);
+    List<Employee> selectFromFormalDutyByDutyTypeId(Integer last_year,Integer last_month,int[] dutyTypeIds);
 
     List<EmployeeDutyInfo> selectByEmpName(String name);
 }

@@ -67,4 +67,7 @@
         select*from jxlt_formal_emp_queue
     </select>
 
+    <select id="selectLastMonthWeekendMorningEmp" resultMap="QueueToEmployee">
+                select*from jxlt_formal_duty_result where date_format(dutyDate, '%Y-%m') >=#{dutyDate} and dutyTypeId in (4,6,7);
+    </select>
 </mapper>

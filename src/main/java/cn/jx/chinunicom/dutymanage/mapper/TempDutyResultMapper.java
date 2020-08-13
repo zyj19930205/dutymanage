@@ -22,4 +22,5 @@ public interface TempDutyResultMapper extends BaseMapper<TempDutyResult> {
     void updateDutyById(int empId2,String empName2,int id);
     TempDutyResult selectByDutyDateAndEmpName(String empName,Date dutyDate);
     void insertToFormalDutyResult();
+
 }

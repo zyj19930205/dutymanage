@@ -9,6 +9,7 @@ import cn.jx.chinunicom.dutymanage.mapper.*;
 import cn.jx.chinunicom.dutymanage.service.EmployeeService;
 import cn.jx.chinunicom.dutymanage.service.FormalDutyResultService;
 import cn.jx.chinunicom.dutymanage.service.TempDutyResultService;
+import cn.jx.chinunicom.dutymanage.util.DutyRules;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ import java.util.List;
 class DutymanageApplicationTests {
 //    @Autowired
 //    private EmployeeService employeeService;
-////    @Autowired
-////    private EmployeeMapper employeeMapper;
+    @Autowired
+    private EmployeeMapper employeeMapper;
 //    @Autowired
 //    private TempDutyResultService tempDutyResultService;
 //    @Autowired
@@ -39,14 +40,22 @@ class DutymanageApplicationTests {
 //    SpecialDutyMapper specialDutyMapper;
 //    @Autowired
 //    DutyQueueMapper dutyQueueMapper;
-//    @Autowired
-//    FormalDutyResultService formalDutyResultService;
+    @Autowired
+    FormalDutyResultService formalDutyResultService;
+    @Autowired
+    DutyQueueMapper dutyQueueMapper;
 //
 //    private static ApplicationContext applicationContext = null;
 
-//    @Test
-//    void contextLoads() {
-//    }
+    @Test
+    void contextLoads() {
+        Date date=new Date();
+        Integer last_year = date.getYear() + 1900;
+        Integer last_month = date.getMonth() + 1;
+        System.out.println(last_year+"/"+last_month);
+        List<Employee> last_holidays_dutyed_empList=employeeMapper.selectFromFormalDutyByDutyTypeId(last_year,last_month,new int[]{DutyRules.假日白班.getStatusCode(),DutyRules.假日晚班.getStatusCode()});
+        System.out.println(last_holidays_dutyed_empList);
+    }
 //
 //    @Test
 //    public void getAllEmp(){
@@ -94,10 +103,10 @@ class DutymanageApplicationTests {
 //        List<DateWithEmp> dateWithEmpList=tempDutyResultService.autoDutyByDay(begin_date,end_date);
 //    }
 //
-//    @Test
-//    public void generateExcel() throws IOException {
-//        formalDutyResultService.GenerateExcelTableForDuty();
-//    }
+    @Test
+    public void generateExcel() throws IOException {
+        formalDutyResultService.GenerateExcelTableForDuty();
+    }
 //
 //    @Test
 //    public void ahaha(){
@@ -105,8 +114,15 @@ class DutymanageApplicationTests {
 //        System.out.println(simpleDateWithEmps);
 //    }
 //
-//    @Test
-//    public void executeFormalDuty(){
-//        tempDutyResultService.executeFormalDutyResult();
-//    }
+    @Test
+    public void executeFormalDuty() throws ParseException {
+
+        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM");
+        String str ="2020-08-01";
+        Date date=sdf.parse(str);
+        String lastMonthDate = sdf.format(date);
+//        System.out.println(lastMonthDate);
+        List<Employee> employeeList=dutyQueueMapper.selectLastMonthWeekendMorningEmp(lastMonthDate);
+        System.out.println(employeeList);
+    }
 }
