@@ -19,9 +19,22 @@ public class Employee {
     @TableField("special_rule")
     private int specialRule;
     @TableField(exist=false)
-    private String empDutyTypeIds;
+    private Integer empDutyTypeIds;
+
+    public Employee(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Employee() {
+    }
 
 
+    public Employee(Integer id, String name, Integer empDutyTypeIds) {
+        this.id = id;
+        this.name = name;
+        this.empDutyTypeIds = empDutyTypeIds;
+    }
 
     @Override
     public boolean equals(Object obj) {

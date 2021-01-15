@@ -20,4 +20,23 @@ public class DutyQueue {
         this.empId = empId;
         this.empName = empName;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof DutyQueue)) {
+            // instanceof 已经处理了obj = null的情况
+            return false;
+        }
+        DutyQueue dutyQueue = (DutyQueue) obj;
+        // 地址相等
+        if (this == dutyQueue) {
+            return true;
+        }
+        // 如果两个对象的id相等，则认为是同一个对象
+        if (dutyQueue.empId == this.empId) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

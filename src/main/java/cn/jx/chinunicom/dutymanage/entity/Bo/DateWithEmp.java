@@ -9,6 +9,7 @@ import java.util.Date;
 public class DateWithEmp {
     private Employee employee;
     private Date dutyDate;
+    private String strDate;
 
     public DateWithEmp( Date dutyDate,Employee employee) {
         this.employee = employee;

@@ -82,4 +82,14 @@
         insert into jxlt_temp_emp_queue (select*from jxlt_formal_emp_queue)
     </insert>
 
+    <select id="getFormalDutyQueue" resultType="cn.jx.chinunicom.dutymanage.entity.DutyQueue">
+        select*from jxlt_formal_emp_queue
+    </select>
+
+
+    <select id="getBigHolidayEmpList" resultMap="QueueToEmployee">
+        select a.id as empId,a.name as empName from jxlt_employee a left join jxlt_formal_duty_result b on a.id = b.empId
+                                                left join jxlt_holidays c on b.dutyDate = c.holidayDate
+        where c.HolidayType =#{holidayType} and date_format(b.dutyDate, '%Y') >=#{year}
+    </select>
 </mapper>

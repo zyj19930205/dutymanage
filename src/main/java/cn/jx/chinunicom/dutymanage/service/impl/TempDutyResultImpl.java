@@ -501,4 +501,18 @@ public class TempDutyResultImpl implements TempDutyResultService {
     }
 
 
+    /**
+     * create by zouyujie
+     * 2021.1.15
+     * 新的排班函数
+     * 步骤：遍历正式排班队列——按照队列顺序分配值班日期——建立一个临时队列，将分配了排班任务的人放置到一个临时队列的底部——临时队列替换数据库中的队列表
+     */
+    public List<DateWithEmp> getTempDutyList(){
+        System.out.println("aa");
+        List<DutyQueue> dutyQueueList=dutyQueueMapper.getFormalDutyQueue();
+        System.out.println(dutyQueueList);
+        return null;
+    }
+
+
 }

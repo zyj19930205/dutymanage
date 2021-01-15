@@ -24,7 +24,7 @@ public interface DutyQueueMapper extends BaseMapper<DutyQueue> {
     void truncateTable();
 
     IPage<DutyQueue> selectQueueByPage(Page<DutyQueue> dutyQueuePage);
-
+    List<DutyQueue> getFormalDutyQueue();
     /**
      * 查询上个月值过白班的员工名单
      * @param
@@ -33,5 +33,6 @@ public interface DutyQueueMapper extends BaseMapper<DutyQueue> {
     List<Employee> selectLastMonthWeekendMorningEmp(String dutyDate);
     void truncateEmpQueue();
     void copyFormalQueueToTemp();
+    List<Employee> getBigHolidayEmpList(Integer holidayType,String year);
 
 }
