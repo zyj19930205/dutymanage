@@ -30,7 +30,7 @@
 </select>
 
     <select id="selectQueueToEmployee" resultMap="QueueToEmployee">
-        SELECT jteq.empId,jteq.empName from jxlt_temp_emp_queue jteq left join jxlt_emp_dutyrule jed on jteq.empId=jed.empId where dutyTypeId = #{dutyTypeId}
+        SELECT jteq.empId,jteq.empName from jxlt_formal_emp_queue jteq left join jxlt_emp_dutyrule jed on jteq.empId=jed.empId where dutyTypeId = #{dutyTypeId}
         GROUP BY jteq.empId ORDER BY jteq.rowId
     </select>
 
@@ -68,6 +68,18 @@
     </select>
 
     <select id="selectLastMonthWeekendMorningEmp" resultMap="QueueToEmployee">
-                select*from jxlt_formal_duty_result where date_format(dutyDate, '%Y-%m') >=#{dutyDate} and dutyTypeId in (4,6,7);
+                SELECT*FROM jxlt_formal_duty_result WHERE date_format(dutyDate, '%Y %m') = date_format(DATE_SUB(#{dutyDate}, INTERVAL 1 MONTH),'%Y %m')
+                and dutyTypeId in (4,6,7)
+                and empName in (select name from jxlt_employee)
     </select>
+
+
+    <update id="truncateEmpQueue">
+    truncate table jxlt_temp_emp_queue
+    </update>
+
+    <insert id="copyFormalQueueToTemp">
+        insert into jxlt_temp_emp_queue (select*from jxlt_formal_emp_queue)
+    </insert>
+
 </mapper>

@@ -80,7 +80,7 @@ public class FormalDutyResultServiceImpl implements FormalDutyResultService {
 
 
         //开始制作excel
-        String filePath = "C://Users/37980/Desktop/2020-02.xlsx";
+        String filePath = "C://Users/37980/Desktop/2020-07.xlsx";
         FileInputStream excelFileInputStream = new FileInputStream(filePath);
         XSSFWorkbook workbook = new XSSFWorkbook(excelFileInputStream);//拿到文件转化为javapoi可操纵类型
         excelFileInputStream.close();
@@ -97,7 +97,7 @@ public class FormalDutyResultServiceImpl implements FormalDutyResultService {
 
         //填充所有日期，每隔7个换一行，每行间隔5
         List<List<SimpleDateWithEmp>> lists=splitList(simpleDateWithEmps,7);//获取分割后的集合组
-        System.out.println(lists);
+//        System.out.println(lists);
         int n=1;//控制日期行
         for(int i=0;i<lists.size();i++){
             Row row=sheet.getRow(n);//日期行
@@ -127,14 +127,13 @@ public class FormalDutyResultServiceImpl implements FormalDutyResultService {
                     if(date.equals(current_date)){//如果日期相符，则插入白班人员
                         cell2.setCellValue(simpleDateWithEmps_mo.get(l).getName());
                     }
-
                 }
             }
             k=k+5;
         }
 
 
-        FileOutputStream excelFileOutPutStream = new FileOutputStream("C://Users/37980/Desktop/2020-02.xlsx");//写数据到这个路径上
+        FileOutputStream excelFileOutPutStream = new FileOutputStream("C://Users/37980/Desktop/2020-07.xlsx");//写数据到这个路径上
         workbook.write(excelFileOutPutStream);
         excelFileOutPutStream.flush();
         excelFileOutPutStream.close();

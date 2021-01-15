@@ -155,6 +155,7 @@ public class TempDutyResultImpl implements TempDutyResultService {
             need_duty_date.removeAll(holiday_date);
         }
         HolidayDutyedEmpList=extractDutyedEmpList(holiday_dateWithEmpList,dutyedEmplist);
+        System.out.println("假期值班人员列表:"+HolidayDutyedEmpList);
 
         //筛选出上个月节假日值班人员，将他们放在末尾
 //        Integer last_year = beginDate.getYear() + 1900;
@@ -174,11 +175,12 @@ public class TempDutyResultImpl implements TempDutyResultService {
          */
         List<Employee> temp_as=new ArrayList<>();
         List<Employee> thursday_duty_emp=dutyQueueMapper.selectQueueToEmployee(DutyRules.周四晚班.getStatusCode());
-
         //thursday_duty_emp=removeDutyedEmp(thursday_duty_emp,dutyedEmplist);
         thursday_duty_emp.removeAll(HolidayDutyedEmpList);//移除掉假日已经排过班的人
         List<Date> thursday_duty_date=getWeekList(need_duty_date,DutyDays.THURSDAY.getDay());
-        List<DateWithEmp> thursday_duty_list=DateAndEmpAdapter(thursday_duty_date,thursday_duty_emp);
+        List<DateWithEmp> thursday_duty_list=new ArrayList<>();
+        thursday_duty_list = DateAndEmpAdapter(thursday_duty_date, thursday_duty_emp);
+        System.out.println("周四晚班可排班人数不够，排班失败！");
         setDutyRemark(thursday_duty_list,DutyRules.周四晚班.getStatusCode());
         putToQueueFoot(thursday_duty_list);  //将已排班的人移动到队列末尾
 
@@ -188,19 +190,21 @@ public class TempDutyResultImpl implements TempDutyResultService {
 //        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,dutyedEmplist);//获取已经被排班的人员
         int weekend_mo_duty[]={DutyRules.周六白班.getStatusCode(),DutyRules.周日白班.getStatusCode()};
         List<Employee> weekend_morning_duty_emp=dutyQueueMapper.selectQueueToEmployeeByArray(weekend_mo_duty);//周末白班排班人员队列
-        weekend_morning_duty_emp.removeAll(HolidayDutyedEmpList);
         System.out.println("周末白班人员队列为"+weekend_morning_duty_emp);
+
+        System.out.println("移除之后白班人员队列为"+weekend_morning_duty_emp);
         //查询上个月值过白班的人员，并将这些人移动到队列末尾
-        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
         String lastMonthDate = sdf.format(beginDate);
         List<Employee> lastWeekDutyedEmp = dutyQueueMapper.selectLastMonthWeekendMorningEmp(lastMonthDate);
         weekend_morning_duty_emp.removeAll(lastWeekDutyedEmp);
         weekend_morning_duty_emp.addAll(lastWeekDutyedEmp);
-
+        //移除本月排过假日班的人
+        weekend_morning_duty_emp.removeAll(HolidayDutyedEmpList);
         List<Date> weekend_duty_Date=getWeekList(need_duty_date,DutyDays.WEEKEND_DUTY_DAY);
         weekend_duty_Date.removeAll(holiday_tx_date);
         List<DateWithEmp> weekend_morning_dutyed_list=DateAndEmpAdapter(weekend_duty_Date,weekend_morning_duty_emp);//日期与人员匹配
-        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,dutyedEmplist);//获取已经被排班的人员
+//        dutyedEmplist=extractDutyedEmpList(thursday_duty_list,dutyedEmplist);//获取已经被排班的人员
         setDutyRemark(weekend_morning_dutyed_list,DutyRules.周末白班.getStatusCode());
         putToQueueFoot(weekend_morning_dutyed_list);
         /*
@@ -278,6 +282,11 @@ public class TempDutyResultImpl implements TempDutyResultService {
      * 1.排过一次权重为5以上的班后，今年内将不会再排到权重为5以上的班（包括次年春节）
      */
     public List<DateWithEmp> auto_holiday_duty(List<Date> dateList,List<Employee> dutyed_emp_list,Date beginDate){
+
+        //排班之前，将正式队列拷贝到临时队列中
+        dutyQueueMapper.truncateEmpQueue();
+        dutyQueueMapper.copyFormalQueueToTemp();
+
         List<DateWithEmp> holidays_duty_list=new ArrayList<>();
         //获取上一个月份
         Integer last_year = beginDate.getYear() + 1900;
@@ -384,6 +393,7 @@ public class TempDutyResultImpl implements TempDutyResultService {
         List<DateWithEmp> dateWithEmpList=new ArrayList<>();
         int dateSize=dateList.size();
         int empSize=dateList.size();
+        System.out.println("dataSize is"+dateSize+","+"empSize is"+empSize);
         for(int i=0;i<dateSize;i++){
             DateWithEmp dateWithEmp;
             dateWithEmp=i>=empSize?new DateWithEmp(dateList.get(i),duty_employeeList.get(i-duty_employeeList.size())):new DateWithEmp(dateList.get(i),duty_employeeList.get(i));

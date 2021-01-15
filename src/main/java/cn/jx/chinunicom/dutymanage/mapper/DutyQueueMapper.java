@@ -31,4 +31,7 @@ public interface DutyQueueMapper extends BaseMapper<DutyQueue> {
      * @return
      */
     List<Employee> selectLastMonthWeekendMorningEmp(String dutyDate);
+    void truncateEmpQueue();
+    void copyFormalQueueToTemp();
+
 }
