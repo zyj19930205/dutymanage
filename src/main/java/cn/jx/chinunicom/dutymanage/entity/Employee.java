@@ -19,7 +19,9 @@ public class Employee {
     @TableField("special_rule")
     private int specialRule;
     @TableField(exist=false)
-    private Integer empDutyTypeIds;
+    private String empDutyTypeIds;
+    @TableField(exist=false)
+    private Integer dutyId;
 
     public Employee(Integer id, String name) {
         this.id = id;
@@ -30,10 +32,10 @@ public class Employee {
     }
 
 
-    public Employee(Integer id, String name, Integer empDutyTypeIds) {
+    public Employee(Integer id, String name, Integer dutyId) {
         this.id = id;
         this.name = name;
-        this.empDutyTypeIds = empDutyTypeIds;
+        this.dutyId = dutyId;
     }
 
     @Override

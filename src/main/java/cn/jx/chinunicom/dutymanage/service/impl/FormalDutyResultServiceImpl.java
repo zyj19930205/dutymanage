@@ -80,7 +80,8 @@ public class FormalDutyResultServiceImpl implements FormalDutyResultService {
 
 
         //开始制作excel
-        String filePath = "C://Users/37980/Desktop/2020-07.xlsx";
+//        String filePath = "C://Users/37980/Desktop/2020-07.xlsx";
+        String filePath = "/Users/zouyujie/Documents/工作/开发/2021-1.xlsx";
         FileInputStream excelFileInputStream = new FileInputStream(filePath);
         XSSFWorkbook workbook = new XSSFWorkbook(excelFileInputStream);//拿到文件转化为javapoi可操纵类型
         excelFileInputStream.close();
@@ -133,7 +134,7 @@ public class FormalDutyResultServiceImpl implements FormalDutyResultService {
         }
 
 
-        FileOutputStream excelFileOutPutStream = new FileOutputStream("C://Users/37980/Desktop/2020-07.xlsx");//写数据到这个路径上
+        FileOutputStream excelFileOutPutStream = new FileOutputStream("/Users/zouyujie/Documents/工作/开发/2021-2.xlsx");//写数据到这个路径上
         workbook.write(excelFileOutPutStream);
         excelFileOutPutStream.flush();
         excelFileOutPutStream.close();

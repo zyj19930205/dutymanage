@@ -150,16 +150,16 @@ class DutymanageApplicationTests {
         //值假日班的队列中，应当剔除 去年春节排班人员 今年国庆排班人员
         List<Employee> bigHolidayEmp_festival = dutyQueueMapper.getBigHolidayEmpList(1,"2020");
         List<Employee> bigHolidayEmp_national = dutyQueueMapper.getBigHolidayEmpList(5,"2020");
-        removeDutyedEmp(dutyQueueList,bigHolidayEmp_festival);
-        removeDutyedEmp(dutyQueueList,bigHolidayEmp_national);
+//        removeDutyedEmp(dutyQueueList,bigHolidayEmp_festival);
+//        removeDutyedEmp(dutyQueueList,bigHolidayEmp_national);
         System.out.println("size is" + dutyQueueList.size() + "," + dutyQueueList);
-//        for(Employee employee:bigHolidayEmp_national){
-//            dutyQueueList = putEmpToEndQueue(dutyQueueList,employee);
-//        }
-//        System.out.println("剔除国庆值班人员后" + dutyQueueList);
-//        for(Employee employee:bigHolidayEmp_festival){
-//            dutyQueueList = putEmpToEndQueue(dutyQueueList,employee);
-//        }
+        for(Employee employee:bigHolidayEmp_national){
+            dutyQueueList = putEmpToEndQueue(dutyQueueList,employee);
+        }
+        System.out.println("剔除国庆值班人员后" + dutyQueueList);
+        for(Employee employee:bigHolidayEmp_festival){
+            dutyQueueList = putEmpToEndQueue(dutyQueueList,employee);
+        }
         System.out.println("剔除春节值班人员后" + dutyQueueList);
 
 
@@ -171,8 +171,10 @@ class DutymanageApplicationTests {
         List<DateWithEmp> total_dateWithEmps=new ArrayList<>();
         //假日白班
         List<DateWithEmp> ho_mo_duty_list = setDutyEmp(holiday_date,dutyQueueList,DutyRules.假日白班.getStatusCode());
+        System.out.println("假日白班"+ ho_mo_duty_list);
         //假日晚班
         List<DateWithEmp> ho_ev_duty_list = setDutyEmp(holiday_date,dutyQueueList,DutyRules.假日晚班.getStatusCode());
+        System.out.println("假日晚班"+ ho_ev_duty_list);
         total_dateWithEmps.addAll(ho_ev_duty_list);
         total_dateWithEmps.addAll(ho_mo_duty_list);
         List<DutyQueue> tempRmoveHolidayQueue=new ArrayList<>();
@@ -186,28 +188,28 @@ class DutymanageApplicationTests {
 
 
         //周六白班
-//        need_duty_date.removeAll(holiday_date);
-//        need_duty_date.removeAll(holiday_tx_date);
-////        System.out.println("需要排班的日期为" + need_duty_date);
-//
-//        List<Date> saturDayList=getWeekList(need_duty_date, DutyDays.SATURDAY.getDay());
-//        saturDayList.removeAll(holiday_tx_date);
-//        List<DateWithEmp> sar_mo_duty_list = setDutyEmp(saturDayList,dutyQueueList,DutyRules.周末白班.getStatusCode());
-//        //周日白班
-//        List<Date> sundayList=getWeekList(need_duty_date, DutyDays.SUNDAY.getDay());
-//        sundayList.removeAll(holiday_tx_date);
-//        List<DateWithEmp> sun_mo_duty_list = setDutyEmp(sundayList,dutyQueueList,DutyRules.周末白班.getStatusCode());
-//        //普通晚班
-//        List<Date> common_day_date=getWeekList(need_duty_date,DutyDays.COMMON_DUTY_DAY);
-//        System.out.println(common_day_date);
-//        common_day_date.addAll(holiday_tx_date);
-//        List<DateWithEmp> common_duty_list = setDutyEmp(common_day_date,dutyQueueList,DutyRules.普通晚班.getStatusCode());
-//        total_dateWithEmps.addAll(sar_mo_duty_list);
-//        total_dateWithEmps.addAll(sun_mo_duty_list);
-//        total_dateWithEmps.addAll(common_duty_list);
-//        generateTempDutyResultList(total_dateWithEmps);
-//        System.out.println("移除节假日值班后的人数为"+dutyQueueList.size()+"队列为"+dutyQueueList);
-//        System.out.println("排班总数"+total_dateWithEmps.size()+"排班结果为"+total_dateWithEmps);
+        need_duty_date.removeAll(holiday_date);
+        need_duty_date.removeAll(holiday_tx_date);
+//        System.out.println("需要排班的日期为" + need_duty_date);
+
+        List<Date> saturDayList=getWeekList(need_duty_date, DutyDays.SATURDAY.getDay());
+        saturDayList.removeAll(holiday_tx_date);
+        List<DateWithEmp> sar_mo_duty_list = setDutyEmp(saturDayList,dutyQueueList,DutyRules.周末白班.getStatusCode());
+        //周日白班
+        List<Date> sundayList=getWeekList(need_duty_date, DutyDays.SUNDAY.getDay());
+        sundayList.removeAll(holiday_tx_date);
+        List<DateWithEmp> sun_mo_duty_list = setDutyEmp(sundayList,dutyQueueList,DutyRules.周末白班.getStatusCode());
+        //普通晚班
+        List<Date> common_day_date=getWeekList(need_duty_date,DutyDays.COMMON_DUTY_DAY);
+        System.out.println(common_day_date);
+        common_day_date.addAll(holiday_tx_date);
+        List<DateWithEmp> common_duty_list = setDutyEmp(common_day_date,dutyQueueList,DutyRules.普通晚班.getStatusCode());
+        total_dateWithEmps.addAll(sar_mo_duty_list);
+        total_dateWithEmps.addAll(sun_mo_duty_list);
+        total_dateWithEmps.addAll(common_duty_list);
+        generateTempDutyResultList(total_dateWithEmps);
+        System.out.println("移除节假日值班后的人数为"+dutyQueueList.size()+"队列为"+dutyQueueList);
+        System.out.println("排班总数"+total_dateWithEmps.size()+"排班结果为"+total_dateWithEmps);
         dutyQueueList.addAll(tempRmoveHolidayQueue);
         generateTempQueue(dutyQueueList);
 //        System.out.println("最终队列总人数"+dutyQueueList.size()+"队列为"+dutyQueueList);
