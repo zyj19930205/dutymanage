@@ -10,4 +10,8 @@
     <select id="getHolidayByHolidayType" resultType="Date">
         select holidayDate from jxlt_holidays where HolidayType=#{HolidayType}
     </select>
+
+    <select id="getHolidayByTypeAndYear" resultType="Date">
+        select holidayDate from jxlt_holidays where HolidayType=#{HolidayType} and  date_format(holidayDate, '%Y') = #{year}
+    </select>
 </mapper>
