@@ -14,4 +14,8 @@
     <select id="getHolidayByTypeAndYear" resultType="Date">
         select holidayDate from jxlt_holidays where HolidayType=#{HolidayType} and  date_format(holidayDate, '%Y') = #{year}
     </select>
+
+    <select id="getHoliday_in_specailWorkDay" resultType="Date">
+     select holidayDate from jxlt_holidays where HolidayType = #{holidayType} and holidayDate between #{begin} and #{end}
+    </select>
 </mapper>
