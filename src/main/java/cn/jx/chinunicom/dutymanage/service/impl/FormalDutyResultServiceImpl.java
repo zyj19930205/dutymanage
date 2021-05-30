@@ -49,7 +49,9 @@ public class FormalDutyResultServiceImpl implements FormalDutyResultService {
 //        int evening_duty_code[]={3,5,8,9,11};
 //        int morning_duty_code[]={2,6,7};
         List<Integer> evening_duty_code= Arrays.asList(3,5,8,9,11);
-        List<Integer> morning_duty_code= Arrays.asList(2,4);
+        List<Integer> morning_duty_code= Arrays.asList(2,4,6,7);
+//        List<Integer> evening_duty_code= Arrays.asList(6,7);
+//        List<Integer> morning_duty_code= Arrays.asList(8,9);
         //获取所有晚班数据
         QueryWrapper<TempDutyResult> tempDutyResultQueryWrapper=new QueryWrapper<>();
         tempDutyResultQueryWrapper.orderByAsc("dutyDate");

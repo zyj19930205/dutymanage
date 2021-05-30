@@ -244,7 +244,7 @@ class DutymanageApplicationTests {
         Employee employee;
         for(int i=0;i<dutyQueueList.size();i++){
             if(checkDutyRules(dutyQueueList.get(i).getEmpId(),dutyRule)){
-//                System.out.println("当前排班人员"+dutyQueueList.get(i).getEmpName()+"，符合排班规则");
+                System.out.println("当前排班人员"+dutyQueueList.get(i).getEmpName()+"，符合排班规则");
                 employee=new Employee(dutyQueueList.get(i).getEmpId(),dutyQueueList.get(i).getEmpName(),dutyRule);
                 return employee;
             } else {
@@ -253,15 +253,6 @@ class DutymanageApplicationTests {
                 continue;
             }
         }
-//        for(DutyQueue dutyQueue:dutyQueueList){
-//            if(checkDutyRules(dutyQueue.getEmpId(),dutyRule)){
-//                System.out.println("当前排班人员"+dutyQueue.getEmpName()+"，符合排班规则");
-//                return new Employee(dutyQueue.getEmpId(),dutyQueue.getEmpName(),dutyRule);
-//            } else {
-//                System.out.println("当前排班人员"+dutyQueue.getEmpName()+"，不符合排班规则！！");
-//                continue;
-//            }
-//        }
         return null;
     }
 
@@ -379,10 +370,14 @@ class DutymanageApplicationTests {
         }
     }
 
-    public void removeDutyedEmp( List<DutyQueue> queueList,List<Employee> employeeList){
+    public List<DutyQueue> removeDutyedEmp( List<DutyQueue> queueList,List<Employee> employeeList){
+        List<DutyQueue> tempQueue = new ArrayList<>();
+        Integer i = 0;
         for(Employee employee:employeeList){
+            tempQueue.add(new DutyQueue(employee.getId(),employee.getName()));
             queueList.remove(new DutyQueue(employee.getId(),employee.getName()));
         }
+        return tempQueue;
     }
 
     /**
@@ -395,24 +390,26 @@ class DutymanageApplicationTests {
      */
     @Test
     public void getTempDutyListTable() throws ParseException {
-        Date begin = DutyUtils.StringToDate("2021-04-01");
-        Date end = DutyUtils.StringToDate("2021-04-30");
+        Date begin = DutyUtils.StringToDate("2021-05-01");
+        Date end = DutyUtils.StringToDate("2021-05-31");
         List<DateWithEmp> holiday_duty_list=new ArrayList<>();
+        List<DutyQueue> removedQueue_holiday = new ArrayList<>();//存储被移除的队列
+        List<Employee> holiday_Emps = new ArrayList<>();
         List<DutyQueue> tempQueue = dutyQueueMapper.getFormalDutyQueue();//获取值班队列
         List<Date> need_duty_date= DutyUtils.getDates(begin,end);//获取排班日期列表
         List<Date> weekend_days = getWeekList(need_duty_date,DutyDays.WEEKEND_DUTY_DAY);//获取这个月的所有周末
         List<Date> common_days = getWeekList(need_duty_date,DutyDays.COMMON_DUTY_DAY_NOT_EXIST_WEEKEND);//获取这个月所有普通班（周一到周五）
 //        common_days.removeAll(holiday_date);//从普通班中移除节假日
-
+        System.out.println("——————————————————————————————————————开始排班，总人数为"+tempQueue.size()+"——————————————————————————————————————————");
         //1.获取节假日值班表,并将已排班的人从本月排班计划中移除
         List<Date> holiday_date=holidayMapper.getHoliday_in_dutyScope(begin,end);
+        common_days.removeAll(holiday_date);
         weekend_days.removeAll(holiday_date);
         if(holiday_date.size()!=0) {
              holiday_duty_list = getHolidayList(begin, end);
-            System.out.println("——————————————————————————————————————假日排班已结束——————————————————————————————————————————");
-            List<Employee> holiday_Emps = getEmpListByDateWithEmp(holiday_duty_list);
-            removeDutyedEmp(tempQueue,holiday_Emps);
-            System.out.println("假日排完以后人数为"+tempQueue.size());
+            holiday_Emps = getEmpListByDateWithEmp(holiday_duty_list);
+            removedQueue_holiday = removeDutyedEmp(tempQueue,holiday_Emps);
+            System.out.println("——————————————————————————————————————假日排完以后剩余可用人数为————————————————————————————————————————"+tempQueue.size());
 //            tempQueue = putEmpToEndQueue(tempQueue,holiday_Emps);
         }
 
@@ -424,29 +421,37 @@ class DutymanageApplicationTests {
             common_days.addAll(specail_work_date);
         }
 
-        //3.双休排班
-        System.out.println("*************************************************周末值班开始***********************************************************");
-        List<DateWithEmp> dateWithEmpList_weekEnd=setWeekendDuty(begin,end,tempQueue,weekend_days);
+        //3.周四排班
+        List<Date> thursday_date =  getWeekList(need_duty_date,DutyDays.THURSDAY.getDay());
+        List<DateWithEmp> thursday_Date_withEmp = setDutyEmp(thursday_date,tempQueue,DutyRules.周四晚班.getStatusCode());
+        List<Employee> thursDayEmp = getEmpListByDateWithEmp(thursday_Date_withEmp);
+        List<DutyQueue> thursDutyQueue =  removeDutyedEmp(tempQueue,thursDayEmp);
+        common_days.removeAll(thursday_date);
 
+
+
+        //4.双休排班
+        System.out.println("*************************************************周末值班开始***********************************************************");
+        System.out.println("*************************************************周末值班队列"+tempQueue+"***********************************************************");
+        List<DateWithEmp> dateWithEmpList_weekEnd=setWeekendDuty(begin,end,tempQueue,weekend_days,holiday_Emps);
+        List<Employee> weekenddutyEmp = getEmpListByDateWithEmp(dateWithEmpList_weekEnd);
+        List<DutyQueue> removeQueue_weekend = removeDutyedEmp(tempQueue,weekenddutyEmp);
+        System.out.println("——————————————————————————————————————周末排完以后剩余可用人数为————————————————————————————————————————"+tempQueue.size());
         //4.普通日期排班
-        System.out.println("*************************************************周末值班开始***********************************************************");
+        System.out.println("*************************************************普通值班开始***********************************************************");
         List<DateWithEmp> dateWithEmpList_common = setCommonDuty(begin,end,tempQueue,common_days);
-
 
         List<DateWithEmp> totalDate = new ArrayList<>();
         totalDate.addAll(holiday_duty_list);
         totalDate.addAll(dateWithEmpList_weekEnd);
         totalDate.addAll(dateWithEmpList_common);
+        totalDate.addAll(thursday_Date_withEmp);
         generateTempDutyResultList(totalDate);
-//        System.out.println("周末值班表为");
-//        System.out.println("————————————————————————————————————————————————————————————————————————————————————");
-//        for(DateWithEmp dateWithEmp:dateWithEmpList){
-//            System.out.println("姓名:"+dateWithEmp.getEmployee().getName()+",日期："+dateWithEmp.getDutyDate());
-//        }
-//        System.out.println(dateWithEmpList);
-////        System.out.println("---------------------------------------------------------------------------");
-////        System.out.println(dateWithEmpList);
-
+        tempQueue.addAll(removeQueue_weekend);
+        tempQueue.addAll(removedQueue_holiday);
+        tempQueue.addAll(thursDutyQueue);
+        System.out.println("排完以后队列为" + tempQueue.size());
+        generateTempQueue(tempQueue);
 
     }
 
@@ -479,13 +484,17 @@ class DutymanageApplicationTests {
         List<Employee> employeeList_1=dutyQueueMapper.getBigHolidayEmpList(1,"2021");
         //获取2020年国庆值班人员
         List<Employee> employeeList_2=dutyQueueMapper.getBigHolidayEmpList(5,"2020");
-        //获取队列
+        //获取2021年清明值班人员
+        List<Employee> employeeList_3=dutyQueueMapper.getBigHolidayEmpList(4,"2021");
         List<DutyQueue> tempQueue = dutyQueueMapper.getFormalDutyQueue();
         System.out.println("队列总人数为"+tempQueue.size());
         for(Employee employee:employeeList_2){
             putEmpToEndQueue(tempQueue,employee);
         }
         for(Employee employee1:employeeList_1){
+            putEmpToEndQueue(tempQueue,employee1);
+        }
+        for(Employee employee1:employeeList_3){
             putEmpToEndQueue(tempQueue,employee1);
         }
         List<DateWithEmp> dateWithEmpList=setDutyEmp(holiday_date,tempQueue,DutyRules.假日白班.getStatusCode());
@@ -517,7 +526,7 @@ class DutymanageApplicationTests {
      * 周末班排班
      */
     @Test
-    public List<DateWithEmp> setWeekendDuty(Date begin,Date end,List<DutyQueue> tempQueue, List<Date> weekend_days) throws ParseException {
+    public List<DateWithEmp> setWeekendDuty(Date begin,Date end,List<DutyQueue> tempQueue, List<Date> weekend_days,List<Employee> employeeList) throws ParseException {
 //        Date begin1 = DutyUtils.StringToDate("2021-04-01");
 //        Date end1 = DutyUtils.StringToDate("2021-04-30");
         List<Date> need_duty_date= DutyUtils.getDates(begin,end);//获取排班日期列表
@@ -528,13 +537,12 @@ class DutymanageApplicationTests {
         String myDate = sdf.format(begin);
         //查询出上个月周末值班人员
         List<Employee> employeeList_weekend = dutyQueueMapper.selectLastMonthWeekendMorningEmp(myDate);
-        List<DutyQueue> weekEnd_tempQueue = tempQueue;
-        removeDutyedEmp(weekEnd_tempQueue,employeeList_weekend);
-        System.out.println("可排周末班的人数为" + weekEnd_tempQueue.size());
-        List<DateWithEmp> dateWithEmpList = setDutyEmp(saturDayList,weekEnd_tempQueue,DutyRules.周六白班.getStatusCode());
-        List<DateWithEmp> dateWithEmpList2 = setDutyEmp(saturDayList,weekEnd_tempQueue,DutyRules.周六晚班.getStatusCode());
-        List<DateWithEmp> dateWithEmpList3 = setDutyEmp(sunDayList,weekEnd_tempQueue,DutyRules.周日白班.getStatusCode());
-        List<DateWithEmp> dateWithEmpList4 = setDutyEmp(sunDayList,weekEnd_tempQueue,DutyRules.周日晚班.getStatusCode());
+        employeeList_weekend.removeAll(employeeList);
+        putEmpToEndQueue(tempQueue,employeeList_weekend);
+        List<DateWithEmp> dateWithEmpList = setDutyEmp(saturDayList,tempQueue,DutyRules.周六白班.getStatusCode());
+        List<DateWithEmp> dateWithEmpList2 = setDutyEmp(saturDayList,tempQueue,DutyRules.周六晚班.getStatusCode());
+        List<DateWithEmp> dateWithEmpList3 = setDutyEmp(sunDayList,tempQueue,DutyRules.周日白班.getStatusCode());
+        List<DateWithEmp> dateWithEmpList4 = setDutyEmp(sunDayList,tempQueue,DutyRules.周日晚班.getStatusCode());
         dateWithEmpList.addAll(dateWithEmpList2);
         dateWithEmpList.addAll(dateWithEmpList3);
         dateWithEmpList.addAll(dateWithEmpList4);
@@ -551,6 +559,7 @@ class DutymanageApplicationTests {
      */
     public List<DateWithEmp> setCommonDuty(Date begin,Date end,List<DutyQueue> tempQueue,List<Date> common_days) throws ParseException {
         List<Date> need_duty_date= DutyUtils.getDates(begin,end);//获取排班日期列表
+        System.out.println("需要排版的普通日期为"+common_days);
         List<DateWithEmp> dateWithEmpList = setDutyEmp(common_days,tempQueue,DutyRules.普通晚班.getStatusCode());
         System.out.println("普通排班开始");
         for(DateWithEmp dateWithEmp:dateWithEmpList){
